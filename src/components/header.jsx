@@ -9,12 +9,21 @@ class Header extends Component {
         return (
             <div className="app-header container">
                 <div className="row">
-                    <div className="col-8">
-
+                    <div className="col-8 homepage-link">
+                        <a href="/">My Cart Manager</a>
                     </div>
                     <div className="col-4 icon-container">
-                        <FontAwesomeIcon icon={ faHeart } />
-                        <FontAwesomeIcon icon={ faShoppingCart } />
+                        <div className="header-icon">
+                            <FontAwesomeIcon 
+                                icon={ faHeart }
+                            />
+                        </div>
+                        <div className="header-icon">
+                            <FontAwesomeIcon 
+                                icon={ faShoppingCart }
+                            />
+                            <span className="cart-item-count">5</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,11 @@ class ProductItemList extends Component {
     }
 
     handleAddButtonClick(productItem) {
-        console.log('adding', productItem);
+        const { onAddCart } = this.props;
+        
+        if (onAddCart != null) {
+            onAddCart(productItem);
+        }
     }
 
     validateQuantity() {
@@ -54,7 +58,8 @@ ProductItemList.propTypes = {
             title: PropTypes.string.isRequired,
             price: PropTypes.string.isRequired
         })
-    )
+    ),
+    onAddCart: PropTypes.func,
 };
   
 ProductItemList.defaultProps = {

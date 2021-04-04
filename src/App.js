@@ -39,7 +39,8 @@ const products =
 ];
 class App extends Component {
   state = {
-    quantity: 1
+    quantity: 1,
+    cartItemList: []
   };
 
   constructor() {
@@ -50,34 +51,68 @@ class App extends Component {
   }
 
   handleAddCartItem(productItem) {
+    const { cartItemList } = this.state;
+
     console.log('adding', productItem);
+    const newCartItem = {
+      totalPrice: this.getTotalPriceString(productItem),
+      ...productItem
+    }
+    console.log('new cart item', newCartItem);
+    this.setState({ cartItemList: [...cartItemList, newCartItem] });
   }
 
-  handleUpdateCartItem(productItem) {
-    console.log('updating', productItem);
+  handleUpdateCartItem(id, newQuantity) {
+    console.log('updating', id, newQuantity);
   }
 
   handleRemoveCartItem(productItem) {
     console.log('removing', productItem);
   }
 
+  getTotalPriceString(productItem) {
+    let totalPriceString = '$0.00';
+
+    if (productItem != null) {
+      const quantity = (productItem.quantity) ? (productItem.quantity) : 0;
+      const priceString = (productItem.price) ? (productItem.price) : '$0.00';
+
+      //remove the currency prefix and start calculating for total price
+      const currencyString = priceString.slice(0, 1);
+      const valueString = priceString.slice(1);
+
+      const priceValue = parseFloat(valueString.replace(',', ''));
+      const newPriceString = (quantity * priceValue).toFixed(2);
+      
+      totalPriceString = `${currencyString}${newPriceString}`;
+    }
+
+    return totalPriceString;
+  }
+
+  getCartItem() {
+    const { cartItemList } = this.state;
+
+    if ((cartItemList != null) && (cartItemList.length > 0)) {
+      return (
+        <CartItem
+          cartItem={ cartItemList[0] }
+          onCartItemDelete={ (cartItem) => this.handleRemoveCartItem(cartItem) }
+          onCartItemUpdate={ (id, newQuantity) => this.handleUpdateCartItem(id, newQuantity) }
+        >
+        </CartItem>
+      );
+    } else {
+      return;
+    }
+    
+  }
+
   render() {
+
     return (
       <div className="App">
-        <CartItem
-          cartItem={ {
-            id:"1986002419777",
-            imageURL:"//cdn.shopify.com/s/files/1/0064/7312/1857/products/product-image-763124671_medium.jpg?v=1571804605",
-            title:"Foldable Waterproof Fishing Bucket",
-            price:"$50.00",
-            quantity: 2,
-            totalPrice: "$199.50"
-          } }
-          onCartItemDelete={ (cartItem) => this.handleRemoveCartItem(cartItem) }
-          onCartItemUpdate={ (cartItem) => this.handleUpdateCartItem(cartItem) }
-        >
-
-        </CartItem>
+        { this.getCartItem() }
 
         <Header></Header>
         <ProductItemList 

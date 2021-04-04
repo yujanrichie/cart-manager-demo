@@ -6,7 +6,7 @@ import './CartItem.scss';
 
 class CartItem extends Component {
     state = {
-        quantity: 5
+        quantity: 1
     };
 
     constructor() {
@@ -16,11 +16,24 @@ class CartItem extends Component {
         this.handleDeleteButtonClick = this.handleDeleteButtonClick.bind(this);
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { cartItem } = nextProps;
+
+        console.log('prevState', prevState);
+        console.log('cartItem', cartItem);
+        if ((cartItem != null) && 
+            (prevState.quantity !== cartItem.quantity)) {
+          return { quantity: nextProps.cartItem.quantity };
+        }
+    
+        return null;
+    }
+
     handleInputChange(e) {
         if ((e != null) && (e.target != null)) {
             const { value } = e.target;
             
-            this.setState({ quantity: value });
+            this.updateQuantity(value);
         }
     }
 
@@ -38,19 +51,9 @@ class CartItem extends Component {
 
     updateQuantity(newQuantity) {
         const { onCartItemUpdate, cartItem } = this.props;
-        console.log('quantity update', newQuantity);
 
-        const newObj = {
-            quantity: newQuantity,
-            ...cartItem
-        };
-        console.log('newobj', newObj);
-
-        if (onCartItemUpdate) {
-            onCartItemUpdate({
-                quantity: newQuantity,
-                ...cartItem
-            });
+        if ((onCartItemUpdate) && (cartItem != null)) {
+            onCartItemUpdate(cartItem.id, newQuantity);
         }
         
         this.setState({ quantity: newQuantity });

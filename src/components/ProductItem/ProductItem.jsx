@@ -62,7 +62,7 @@ class ProductItem extends Component {
                 title,
                 imageURL,
                 price,
-                quantity: this.state.quantity
+                quantity
             });
         }
     }
@@ -79,11 +79,11 @@ class ProductItem extends Component {
     }
     
     render() {
-        const { minQuantity, maxQuantity, productItem } = this.props;
+        const { className, minQuantity, maxQuantity, productItem } = this.props;
         const { title, imageURL, price } = productItem;
 
         return (
-            <div className="product-item">
+            <div className={ className }>
                 <div className="product-details container">
                     <div className="row">
                         <span className="product-title">{ title }</span>
@@ -155,11 +155,13 @@ ProductItem.propTypes = {
         price: PropTypes.string.isRequired
     }).isRequired,
     onAddCart: PropTypes.func,
+    className: PropTypes.string,
     minQuantity: PropTypes.number,
     maxQuantity: PropTypes.number
 };
   
 ProductItem.defaultProps = {
+    className:'product-item',
     minQuantity: 1,
     maxQuantity: 10
 };

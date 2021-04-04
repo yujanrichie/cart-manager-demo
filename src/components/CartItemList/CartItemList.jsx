@@ -35,6 +35,7 @@ class CartItemList extends Component {
 
         return (
             <React.Fragment>
+                <h3 className="my-cart-header">My Cart</h3>
                 <div className="cart-item-list">
                     { cartItemList.map(item => 
                         <CartItem

@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import './App.scss';
 import Header from './components/Header';
 import ProductItemList from './components/ProductItemList';
@@ -40,7 +46,8 @@ const products =
 class App extends Component {
   state = {
     cartItemList: [],
-    cartTotalPrice: '$0.00'
+    cartTotalPrice: '$0.00',
+    cartTotalQuantity: 0
   };
 
   constructor() {
@@ -126,17 +133,12 @@ class App extends Component {
   }
 
   updateCartItemList(newList) {
-    this.setState({ 
-      cartItemList: newList,
-      cartTotalPrice: this.getCartTotalPriceString(newList)
-     });
-  }
-
-  getCartTotalPriceString(cartItemList) {
+    //get cartTotalprice and totalquantity
     let cartTotalPrice = 0;
     let currencyString = '$';
+    let totalQuantity = 0;
 
-    cartItemList && cartItemList.forEach(item => {
+    newList && newList.forEach(item => {
       if ((item != null) && (item.totalPrice != null)) {
         //remove the currency prefix and start adding each item total price
         currencyString = item.totalPrice.slice(0, 1);
@@ -145,33 +147,49 @@ class App extends Component {
         const priceValue = parseFloat(valueString.replace(',', ''));
         cartTotalPrice += priceValue;
       }
+
+      if ((item != null) && (item.quantity != null)) {
+        totalQuantity += item.quantity;
+      }
     });
 
     const newPriceString = cartTotalPrice.toFixed(2);
     const cartTotalPriceString = `${currencyString}${newPriceString}`;
 
-    return cartTotalPriceString;
+    this.setState({ 
+      cartItemList: newList,
+      cartTotalPrice: cartTotalPriceString,
+      cartTotalQuantity: totalQuantity
+     });
   }
 
   render() {
-    const { cartItemList, cartTotalPrice } = this.state;
+    const { cartItemList, cartTotalPrice, cartTotalQuantity } = this.state;
 
     return (
-      <div className="App">
-        <CartItemList
-          cartItemList={ cartItemList }
-          cartTotalPrice= { cartTotalPrice }
-          onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
-          onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
-        >
-        </CartItemList>
-
-        <Header></Header>
-        <ProductItemList 
-          products={ products }
-          onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
-        ></ProductItemList>
-      </div>
+      <Router>
+        <div className="App">
+        <Switch>
+          <Route path="/mycart">
+            <Header quantity={ cartTotalQuantity }></Header>
+            <CartItemList
+              cartItemList={ cartItemList }
+              cartTotalPrice= { cartTotalPrice }
+              onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+              onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
+            >
+            </CartItemList>
+          </Route>
+          <Route path="/">
+            <Header quantity= { cartTotalQuantity }></Header>
+            <ProductItemList 
+              products={ products }
+              onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
+            ></ProductItemList>
+          </Route>
+        </Switch>
+        </div>
+      </Router>
     );
   }
 }

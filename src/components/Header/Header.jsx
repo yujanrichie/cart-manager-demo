@@ -11,8 +11,9 @@ class Header extends Component {
                     <div className="col-8 brand-container">
                         <a href="/">
                             <img className="header-logo"
-                                src="https://thumbs.dreamstime.com/b/crown-gold-black-background-icon-vector-crown-gold-black-background-icon-vector-unique-fashion-color-company-brand-175288845.jpg">
-                            </img>
+                                src="https://thumbs.dreamstime.com/b/crown-gold-black-background-icon-vector-crown-gold-black-background-icon-vector-unique-fashion-color-company-brand-175288845.jpg"
+                                alt=""
+                            />
                             <span className="header-title">MY SHOP</span>
                         </a>
                     </div>

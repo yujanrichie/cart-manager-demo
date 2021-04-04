@@ -10,8 +10,6 @@
         display: inline-flex;
         text-align: center;
         justify-content: center;
-        font-weight: bold;
-        font-size: 18px;
         color: #fff;
         
         a {
@@ -26,6 +24,8 @@
 
             .header-title {
                 vertical-align: middle;
+                font-weight: bold;
+                font-size: 22px;
             }
         }
     }
@@ -45,7 +45,7 @@
             }
 
             .fa-heart, .fa-shopping-cart {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             .cart-item-count {

@@ -3,6 +3,9 @@ $breakpoint-one-column-max-width: 599px;
 $breakpoint-two-column-min-width: 600px;
 $breakpoint-two-column-max-width: 899px;
 
+.my-cart-header {
+    text-align: center;
+}
 
 .cart-item-list {
     display: grid;

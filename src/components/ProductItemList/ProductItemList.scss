@@ -1,0 +1,44 @@
+//Screen Breakpoints
+$breakpoint-mobile-min-width: 280px;
+$breakpoint-mobile-max-width: 480px;
+$breakpoint-tablet-min-width: 481px;
+$breakpoint-tablet-max-width: 768px;
+$breakpoint-small-screen-min-width: 769px;
+$breakpoint-small-screen-max-width: 900px;
+
+.product-item-list {
+    display: grid;
+    overflow: hidden;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (min-width: $breakpoint-small-screen-min-width) 
+        and (max-width: $breakpoint-small-screen-max-width) {
+        //flex-direction: column;
+        grid-template-columns: repeat(3, 1fr);
+        .product-item {
+            width: 240px;
+        }
+    }
+
+    @media (min-width: $breakpoint-tablet-min-width) 
+        and (max-width: $breakpoint-tablet-max-width) {
+        //flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
+        .product-item {
+            width: 240px;
+        }
+    }
+
+    @media (min-width: $breakpoint-mobile-min-width) 
+        and (max-width: $breakpoint-mobile-max-width) {
+        //flex-direction: column;
+        grid-template-columns: repeat(1, 1fr);
+        .product-item {
+            width: 300px;
+        }
+    }
+}
+
+

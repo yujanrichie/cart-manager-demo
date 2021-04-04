@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import Header from './components/Header';
 import ProductItemList from './components/ProductItemList';
-import CartItem from './components/CartItem';
+import CartItemList from './components/CartItemList';
 
 const products = 
 [
@@ -54,12 +54,25 @@ class App extends Component {
     const { cartItemList } = this.state;
 
     console.log('adding', productItem);
-    const newCartItem = {
-      ...productItem,
-      totalPrice: this.getTotalPriceString(productItem.quantity, productItem.price)
+
+    if (productItem != null) {
+      if (this.isItemInCart(productItem.id)) {
+        console.log('already in cart!, update instead')
+        //already in cart, update quantity instead
+        const itemInCart = cartItemList.find(item => item && item.id === productItem.id);
+        const previousQuantity = (itemInCart && itemInCart.quantity) ? itemInCart.quantity : 0;
+        const newQuantity = previousQuantity + productItem.quantity;
+        this.handleUpdateCartItemByID(productItem.id, newQuantity);
+
+      } else {
+        const newCartItem = {
+          ...productItem,
+          totalPrice: this.getTotalPriceString(productItem.quantity, productItem.price)
+        }
+        console.log('new cart item', newCartItem);
+        this.setState({ cartItemList: [...cartItemList, newCartItem] });
+      }
     }
-    console.log('new cart item', newCartItem);
-    this.setState({ cartItemList: [...cartItemList, newCartItem] });
   }
 
   handleUpdateCartItemByID(itemID, newQuantity) {
@@ -110,29 +123,27 @@ class App extends Component {
     return totalPriceString;
   }
 
-  getCartItem() {
+  isItemInCart(productID) {
     const { cartItemList } = this.state;
 
     if ((cartItemList != null) && (cartItemList.length > 0)) {
-      return (
-        <CartItem
-          cartItem={ cartItemList[0] }
-          onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
-          onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
-        >
-        </CartItem>
-      );
-    } else {
-      return;
+      let itemFound = cartItemList.findIndex(item => item && item.id === productID);
+      if (itemFound !== -1) return true;
     }
-    
+    return false;
   }
 
   render() {
+    const { cartItemList } = this.state;
 
     return (
       <div className="App">
-        { this.getCartItem() }
+        <CartItemList
+          cartItemList={ cartItemList }
+          onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+          onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
+        >
+        </CartItemList>
 
         <Header></Header>
         <ProductItemList 

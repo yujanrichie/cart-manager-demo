@@ -39,8 +39,8 @@ const products =
 ];
 class App extends Component {
   state = {
-    quantity: 1,
-    cartItemList: []
+    cartItemList: [],
+    cartTotalPrice: '$0.00'
   };
 
   constructor() {
@@ -53,11 +53,8 @@ class App extends Component {
   handleAddCartItem(productItem) {
     const { cartItemList } = this.state;
 
-    console.log('adding', productItem);
-
     if (productItem != null) {
       if (this.isItemInCart(productItem.id)) {
-        console.log('already in cart!, update instead')
         //already in cart, update quantity instead
         const itemInCart = cartItemList.find(item => item && item.id === productItem.id);
         const previousQuantity = (itemInCart && itemInCart.quantity) ? itemInCart.quantity : 0;
@@ -67,24 +64,23 @@ class App extends Component {
       } else {
         const newCartItem = {
           ...productItem,
-          totalPrice: this.getTotalPriceString(productItem.quantity, productItem.price)
+          totalPrice: this.getItemTotalPriceString(productItem.quantity, productItem.price)
         }
-        console.log('new cart item', newCartItem);
-        this.setState({ cartItemList: [...cartItemList, newCartItem] });
+
+        this.updateCartItemList([...cartItemList, newCartItem]);
       }
     }
   }
 
   handleUpdateCartItemByID(itemID, newQuantity) {
     const { cartItemList } = this.state;
-    console.log('updating', itemID, newQuantity);
 
     let newCartItemList = cartItemList.map(item => {
       if (item && item.id === itemID) {
         const updatedItem = {
           ...item,
           quantity: newQuantity,
-          totalPrice: this.getTotalPriceString(newQuantity, item.price)
+          totalPrice: this.getItemTotalPriceString(newQuantity, item.price)
         };
         return updatedItem;
       } else {
@@ -92,30 +88,26 @@ class App extends Component {
       }
     });
 
-    console.log('new updated list', newCartItemList);
-    this.setState({ cartItemList: newCartItemList });
+    this.updateCartItemList(newCartItemList);
   }
 
   handleRemoveCartItemByID(itemID) {
     const { cartItemList } = this.state;
-    console.log('removing', itemID);
     let newCartItemList = cartItemList.filter(item => item && item.id !== itemID);
 
-    this.setState({ cartItemList: newCartItemList });
+    this.updateCartItemList(newCartItemList);
   }
 
-  getTotalPriceString(quantity, priceString) {
+  getItemTotalPriceString(quantity, priceString) {
     let totalPriceString = '$0.00';
 
     if (!isNaN(quantity)) {
       //remove the currency prefix and start calculating for total price
       const currencyString = priceString.slice(0, 1);
       const valueString = priceString.slice(1);
-      console.log('here', quantity, valueString);
 
       const priceValue = parseFloat(valueString.replace(',', ''));
       const newPriceString = (quantity * priceValue).toFixed(2);
-      console.log('here', priceValue, newPriceString);
       
       totalPriceString = `${currencyString}${newPriceString}`;
     }
@@ -133,13 +125,42 @@ class App extends Component {
     return false;
   }
 
+  updateCartItemList(newList) {
+    this.setState({ 
+      cartItemList: newList,
+      cartTotalPrice: this.getCartTotalPriceString(newList)
+     });
+  }
+
+  getCartTotalPriceString(cartItemList) {
+    let cartTotalPrice = 0;
+    let currencyString = '$';
+
+    cartItemList && cartItemList.forEach(item => {
+      if ((item != null) && (item.totalPrice != null)) {
+        //remove the currency prefix and start adding each item total price
+        currencyString = item.totalPrice.slice(0, 1);
+        const valueString = item.totalPrice.slice(1);
+
+        const priceValue = parseFloat(valueString.replace(',', ''));
+        cartTotalPrice += priceValue;
+      }
+    });
+
+    const newPriceString = cartTotalPrice.toFixed(2);
+    const cartTotalPriceString = `${currencyString}${newPriceString}`;
+
+    return cartTotalPriceString;
+  }
+
   render() {
-    const { cartItemList } = this.state;
+    const { cartItemList, cartTotalPrice } = this.state;
 
     return (
       <div className="App">
         <CartItemList
           cartItemList={ cartItemList }
+          cartTotalPrice= { cartTotalPrice }
           onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
           onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
         >

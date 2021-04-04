@@ -31,22 +31,26 @@ class CartItemList extends Component {
     }
     
     render() {
-        const { cartItemList } = this.props;
-        console.log('cartItems', cartItemList);
+        const { cartItemList, cartTotalPrice } = this.props;
 
         return (
-            <div className="product-item-list">
-                { cartItemList.map(item => 
-                    <CartItem
-                        className="cart-item"
-                        key={ item.id }
-                        cartItem={ item }
-                        onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
-                        onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
-                    >
-                  </CartItem>
-                ) }
-            </div>
+            <React.Fragment>
+                <div className="cart-item-list">
+                    { cartItemList.map(item => 
+                        <CartItem
+                            className="cart-item"
+                            key={ item.id }
+                            cartItem={ item }
+                            onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+                            onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
+                        >
+                    </CartItem>
+                    ) }
+                </div>
+                <div className="cart-total-price">
+                    <span>TOTAL: { cartTotalPrice }</span>
+                </div>
+            </React.Fragment>
         );
     }
 }
@@ -62,12 +66,14 @@ CartItemList.propTypes = {
             totalPrice: PropTypes.string.isRequired
         })
     ),
+    cartTotalPrice: PropTypes.string,
     onCartItemUpdateByID: PropTypes.func,
     onCartItemDeleteByID: PropTypes.func,
 };
   
 CartItemList.defaultProps = {
     cartItemList: [],
+    cartTotalPrice: '$0.00'
 };
   
 

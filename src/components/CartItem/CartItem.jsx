@@ -104,7 +104,7 @@ class CartItem extends Component {
                                 <span className="item-title">{ title }</span>
                             </div>
                             <div className="row no-gutters">
-                                <div className="col-12 col-sm-6">
+                                <div className="col-12">
                                     <div className="item-quantity-price">
                                         <input className="quantity-input"
                                             type="number"
@@ -119,7 +119,7 @@ class CartItem extends Component {
                                         <span className="item-price">{ price }</span>
                                     </div>
                                 </div>
-                                <div className="col-12 col-sm-6">
+                                <div className="col-12">
                                     <span className="item-total-price">Price: { totalPrice }</span>
                                 </div>
                             </div>

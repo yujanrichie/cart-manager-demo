@@ -1,0 +1,40 @@
+//Screen Breakpoints
+$breakpoint-one-column-max-width: 599px;
+$breakpoint-two-column-min-width: 600px;
+$breakpoint-two-column-max-width: 899px;
+
+
+.cart-item-list {
+    display: grid;
+    overflow: hidden;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+
+    .cart-item {
+        width: 300px;
+        margin: 16px auto;
+    }
+
+    @media (min-width: $breakpoint-two-column-min-width) 
+        and (max-width: $breakpoint-two-column-max-width) {
+        //flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $breakpoint-one-column-max-width) {
+        //flex-direction: column;
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.cart-total-price {
+    display: flex;
+    font-size: 18px;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    margin: 8px auto;
+}
+
+

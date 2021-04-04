@@ -15,20 +15,9 @@ class ProductItemList extends Component {
 
     handleAddButtonClick(productItem) {
         const { onAddCart } = this.props;
-        
+
         if (onAddCart != null) {
             onAddCart(productItem);
-        }
-    }
-
-    validateQuantity() {
-        const { quantity } = this.state;
-        const { minQuantity, maxQuantity } = this.props;
-
-        if ((isNaN(quantity)) || (quantity === '') || (quantity < minQuantity)) {
-            this.setState({ quantity: minQuantity });
-        } else if (quantity > maxQuantity) {
-            this.setState({  quantity: maxQuantity });
         }
     }
     

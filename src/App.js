@@ -167,29 +167,44 @@ class App extends Component {
     const { cartItemList, cartTotalPrice, cartTotalQuantity } = this.state;
 
     return (
-      <Router>
-        <div className="App">
-        <Switch>
-          <Route path="/mycart">
-            <Header quantity={ cartTotalQuantity }></Header>
-            <CartItemList
-              cartItemList={ cartItemList }
-              cartTotalPrice= { cartTotalPrice }
-              onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
-              onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
-            >
-            </CartItemList>
-          </Route>
-          <Route path="/">
-            <Header quantity= { cartTotalQuantity }></Header>
-            <ProductItemList 
-              products={ products }
-              onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
-            ></ProductItemList>
-          </Route>
-        </Switch>
-        </div>
-      </Router>
+      <div className="App">
+        <CartItemList
+          cartItemList={ cartItemList }
+          cartTotalPrice= { cartTotalPrice }
+          onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+          onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
+        >
+        </CartItemList>
+
+        <Header quantity={ cartTotalQuantity }></Header>
+        <ProductItemList 
+          products={ products }
+          onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
+        ></ProductItemList>
+    </div>
+      // <Router>
+      //   <div className="App">
+      //   <Switch>
+      //     <Route path="/mycart">
+      //       <Header quantity={ cartTotalQuantity }></Header>
+      //       <CartItemList
+      //         cartItemList={ cartItemList }
+      //         cartTotalPrice= { cartTotalPrice }
+      //         onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+      //         onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
+      //       >
+      //       </CartItemList>
+      //     </Route>
+      //     <Route path="/">
+      //       <Header quantity= { cartTotalQuantity }></Header>
+      //       <ProductItemList 
+      //         products={ products }
+      //         onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
+      //       ></ProductItemList>
+      //     </Route>
+      //   </Switch>
+      //   </div>
+      // </Router>
     );
   }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import Header from './components/Header';
 import ProductItemList from './components/ProductItemList';
+import CartItem from './components/CartItem';
 
 const products = 
 [
@@ -43,20 +44,45 @@ class App extends Component {
 
   constructor() {
     super();
-    this.handleAddItemToCart = this.handleAddItemToCart.bind(this);
+    this.handleAddCartItem = this.handleAddCartItem.bind(this);
+    this.handleUpdateCartItem = this.handleUpdateCartItem.bind(this);
+    this.handleRemoveCartItem = this.handleRemoveCartItem.bind(this);
   }
 
-  handleAddItemToCart(productItem) {
+  handleAddCartItem(productItem) {
     console.log('adding', productItem);
+  }
+
+  handleUpdateCartItem(productItem) {
+    console.log('updating', productItem);
+  }
+
+  handleRemoveCartItem(productItem) {
+    console.log('removing', productItem);
   }
 
   render() {
     return (
       <div className="App">
+        <CartItem
+          cartItem={ {
+            id:"1986002419777",
+            imageURL:"//cdn.shopify.com/s/files/1/0064/7312/1857/products/product-image-763124671_medium.jpg?v=1571804605",
+            title:"Foldable Waterproof Fishing Bucket",
+            price:"$50.00",
+            quantity: 2,
+            totalPrice: "$199.50"
+          } }
+          onCartItemDelete={ (cartItem) => this.handleRemoveCartItem(cartItem) }
+          onCartItemUpdate={ (cartItem) => this.handleUpdateCartItem(cartItem) }
+        >
+
+        </CartItem>
+
         <Header></Header>
         <ProductItemList 
           products={ products }
-          onAddCart={ (productItem) => this.handleAddItemToCart(productItem) }
+          onAddCart={ (productItem) => this.handleAddCartItem(productItem) }
         ></ProductItemList>
       </div>
     );

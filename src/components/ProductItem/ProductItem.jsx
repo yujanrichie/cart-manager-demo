@@ -54,15 +54,11 @@ class ProductItem extends Component {
     handleAddButtonClick() {
         const { quantity } = this.state;
         const { onAddCart, productItem } = this.props;
-        const { id, title, imageURL, price } = productItem;
 
         if (onAddCart != null) {
             onAddCart({
-                id,
-                title,
-                imageURL,
-                price,
-                quantity
+                quantity,
+                ...productItem
             });
         }
     }
@@ -121,7 +117,7 @@ class ProductItem extends Component {
                                     maxLength={2}
                                     min={ minQuantity }
                                     max={ maxQuantity }
-                                    onChange={ this.handleInputChange }
+                                    onChange={ (e) => this.handleInputChange(e) }
                                     onBlur={ this.handleInputBlur }
                                 />
                                 <div className="action-icon more-quantity"

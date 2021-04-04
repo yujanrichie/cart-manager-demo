@@ -9,6 +9,7 @@ import './App.scss';
 import Header from './components/Header';
 import ProductItemList from './components/ProductItemList';
 import CartItemList from './components/CartItemList';
+import { CartManager } from 'yujan-cart-manager';
 
 const products = 
 [
@@ -55,33 +56,42 @@ class App extends Component {
     this.handleAddCartItem = this.handleAddCartItem.bind(this);
     this.handleUpdateCartItemByID = this.handleUpdateCartItemByID.bind(this);
     this.handleRemoveCartItemByID = this.handleRemoveCartItemByID.bind(this);
+    this.updateCartItemList = this.updateCartItemList.bind(this);
+    this.cartManager = new CartManager();
+    this.cartManager.subscribeCartUpdates(this.updateCartItemList);
   }
 
   handleAddCartItem(productItem) {
-    const { cartItemList } = this.state;
 
     if (productItem != null) {
-      if (this.isItemInCart(productItem.id)) {
-        //already in cart, update quantity instead
-        const itemInCart = cartItemList.find(item => item && item.id === productItem.id);
-        const previousQuantity = (itemInCart && itemInCart.quantity) ? itemInCart.quantity : 0;
-        const newQuantity = previousQuantity + productItem.quantity;
-        this.handleUpdateCartItemByID(productItem.id, newQuantity);
 
-      } else {
         const newCartItem = {
           ...productItem,
           totalPrice: this.getItemTotalPriceString(productItem.quantity, productItem.price)
         }
 
-        this.updateCartItemList([...cartItemList, newCartItem]);
-      }
+        this.cartManager.pushItem(newCartItem);
+        //this.updateCartItemList([...cartItemList, newCartItem]);
+      
     }
   }
 
   handleUpdateCartItemByID(itemID, newQuantity) {
     const { cartItemList } = this.state;
 
+    
+    // TODO: fix issue on update library vs state change here
+    // const itemInCart = cartItemList.find(item => item && item.id === itemID);
+    // if (newQuantity !== itemInCart.quantity) {
+    //   const newCartItem = {
+    //     ...itemInCart,
+    //     quantity: newQuantity
+    //   }
+    //   console.log('updating this', newCartItem, newQuantity);
+      
+    //   this.cartManager.updateItem(newCartItem);
+    // }
+    
     let newCartItemList = cartItemList.map(item => {
       if (item && item.id === itemID) {
         const updatedItem = {
@@ -100,9 +110,11 @@ class App extends Component {
 
   handleRemoveCartItemByID(itemID) {
     const { cartItemList } = this.state;
-    let newCartItemList = cartItemList.filter(item => item && item.id !== itemID);
+    // let newCartItemList = cartItemList.filter(item => item && item.id !== itemID);
+    const itemInCart = cartItemList.find(item => item && item.id === itemID);
+    this.cartManager.removeItem(itemInCart);
 
-    this.updateCartItemList(newCartItemList);
+    //this.updateCartItemList(newCartItemList);
   }
 
   getItemTotalPriceString(quantity, priceString) {
@@ -139,6 +151,9 @@ class App extends Component {
     let totalQuantity = 0;
 
     newList && newList.forEach(item => {
+      let totalPrice = this.getItemTotalPriceString(item.quantity, item.price)
+      item.totalPrice = totalPrice;
+
       if ((item != null) && (item.totalPrice != null)) {
         //remove the currency prefix and start adding each item total price
         currencyString = item.totalPrice.slice(0, 1);

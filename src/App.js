@@ -46,8 +46,8 @@ class App extends Component {
   constructor() {
     super();
     this.handleAddCartItem = this.handleAddCartItem.bind(this);
-    this.handleUpdateCartItem = this.handleUpdateCartItem.bind(this);
-    this.handleRemoveCartItem = this.handleRemoveCartItem.bind(this);
+    this.handleUpdateCartItemByID = this.handleUpdateCartItemByID.bind(this);
+    this.handleRemoveCartItemByID = this.handleRemoveCartItemByID.bind(this);
   }
 
   handleAddCartItem(productItem) {
@@ -55,34 +55,54 @@ class App extends Component {
 
     console.log('adding', productItem);
     const newCartItem = {
-      totalPrice: this.getTotalPriceString(productItem),
-      ...productItem
+      ...productItem,
+      totalPrice: this.getTotalPriceString(productItem.quantity, productItem.price)
     }
     console.log('new cart item', newCartItem);
     this.setState({ cartItemList: [...cartItemList, newCartItem] });
   }
 
-  handleUpdateCartItem(id, newQuantity) {
-    console.log('updating', id, newQuantity);
+  handleUpdateCartItemByID(itemID, newQuantity) {
+    const { cartItemList } = this.state;
+    console.log('updating', itemID, newQuantity);
+
+    let newCartItemList = cartItemList.map(item => {
+      if (item && item.id === itemID) {
+        const updatedItem = {
+          ...item,
+          quantity: newQuantity,
+          totalPrice: this.getTotalPriceString(newQuantity, item.price)
+        };
+        return updatedItem;
+      } else {
+        return item;
+      }
+    });
+
+    console.log('new updated list', newCartItemList);
+    this.setState({ cartItemList: newCartItemList });
   }
 
-  handleRemoveCartItem(productItem) {
-    console.log('removing', productItem);
+  handleRemoveCartItemByID(itemID) {
+    const { cartItemList } = this.state;
+    console.log('removing', itemID);
+    let newCartItemList = cartItemList.filter(item => item && item.id !== itemID);
+
+    this.setState({ cartItemList: newCartItemList });
   }
 
-  getTotalPriceString(productItem) {
+  getTotalPriceString(quantity, priceString) {
     let totalPriceString = '$0.00';
 
-    if (productItem != null) {
-      const quantity = (productItem.quantity) ? (productItem.quantity) : 0;
-      const priceString = (productItem.price) ? (productItem.price) : '$0.00';
-
+    if (!isNaN(quantity)) {
       //remove the currency prefix and start calculating for total price
       const currencyString = priceString.slice(0, 1);
       const valueString = priceString.slice(1);
+      console.log('here', quantity, valueString);
 
       const priceValue = parseFloat(valueString.replace(',', ''));
       const newPriceString = (quantity * priceValue).toFixed(2);
+      console.log('here', priceValue, newPriceString);
       
       totalPriceString = `${currencyString}${newPriceString}`;
     }
@@ -97,8 +117,8 @@ class App extends Component {
       return (
         <CartItem
           cartItem={ cartItemList[0] }
-          onCartItemDelete={ (cartItem) => this.handleRemoveCartItem(cartItem) }
-          onCartItemUpdate={ (id, newQuantity) => this.handleUpdateCartItem(id, newQuantity) }
+          onCartItemDeleteByID={ (itemID) => this.handleRemoveCartItemByID(itemID) }
+          onCartItemUpdateByID={ (itemID, newQuantity) => this.handleUpdateCartItemByID(itemID, newQuantity) }
         >
         </CartItem>
       );

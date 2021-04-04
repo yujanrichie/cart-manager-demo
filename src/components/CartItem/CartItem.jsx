@@ -6,7 +6,8 @@ import './CartItem.scss';
 
 class CartItem extends Component {
     state = {
-        quantity: 1
+        quantity: 1,
+        totalPrice: '$0.00'
     };
 
     constructor() {
@@ -19,11 +20,22 @@ class CartItem extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         const { cartItem } = nextProps;
 
-        console.log('prevState', prevState);
-        console.log('cartItem', cartItem);
-        if ((cartItem != null) && 
-            (prevState.quantity !== cartItem.quantity)) {
-          return { quantity: nextProps.cartItem.quantity };
+        if (cartItem != null) {
+            if ((prevState.quantity !== cartItem.quantity) &&
+                (prevState.totalPrice !== cartItem.totalPrice)) {
+                return { 
+                    quantity: cartItem.quantity,
+                    totalPrice: cartItem.totalPrice 
+                };
+            }
+
+            if (prevState.quantity !== cartItem.quantity) {
+                return { quantity: cartItem.quantity };
+            }
+
+            if (prevState.totalPrice !== cartItem.totalPrice) {
+                return { totalPrice: cartItem.totalPrice };
+            }
         }
     
         return null;
@@ -32,7 +44,6 @@ class CartItem extends Component {
     handleInputChange(e) {
         if ((e != null) && (e.target != null)) {
             const { value } = e.target;
-            
             this.updateQuantity(value);
         }
     }
@@ -42,18 +53,20 @@ class CartItem extends Component {
     }
 
     handleDeleteButtonClick() {
-        const { onCartItemDelete, cartItem } = this.props;
+        const { onCartItemDeleteByID, cartItem } = this.props;
 
-        if (onCartItemDelete != null) {
-            onCartItemDelete(cartItem);
+        if ((onCartItemDeleteByID != null) && (cartItem != null)) {
+            onCartItemDeleteByID(cartItem.id);
         }
     }
 
-    updateQuantity(newQuantity) {
-        const { onCartItemUpdate, cartItem } = this.props;
+    updateQuantity(quantity) {
+        const { onCartItemUpdateByID, cartItem } = this.props;
 
-        if ((onCartItemUpdate) && (cartItem != null)) {
-            onCartItemUpdate(cartItem.id, newQuantity);
+        let newQuantity = (typeof(quantity) === 'string') ? parseInt(quantity) : quantity;
+
+        if ((onCartItemUpdateByID) && (cartItem != null)) {
+            onCartItemUpdateByID(cartItem.id, newQuantity);
         }
         
         this.setState({ quantity: newQuantity });
@@ -73,9 +86,9 @@ class CartItem extends Component {
     }
     
     render() {
-        const { quantity } = this.state;
+        const { quantity, totalPrice } = this.state;
         const { className, minQuantity, maxQuantity, cartItem } = this.props;
-        const { title, imageURL, price, totalPrice } = cartItem;
+        const { title, imageURL, price } = cartItem;
 
         return (
             <div className={ className }>
@@ -135,8 +148,8 @@ CartItem.propTypes = {
         quantity: PropTypes.number.isRequired,
         totalPrice: PropTypes.string.isRequired
     }).isRequired,
-    onCartItemUpdate: PropTypes.func,
-    onCartItemDelete: PropTypes.func,
+    onCartItemUpdateByID: PropTypes.func,
+    onCartItemDeleteByID: PropTypes.func,
     className: PropTypes.string,
     minQuantity: PropTypes.number,
     maxQuantity: PropTypes.number

@@ -21,6 +21,7 @@ class ProductItem extends Component {
     handleInputChange(e) {
         if ((e != null) && (e.target != null)) {
             const { value } = e.target;
+            console.log('change', value);
             this.setState({ quantity: value });
         }
     }
